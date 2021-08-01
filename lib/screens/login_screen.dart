@@ -13,6 +13,24 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   var _name = '';
   var _changeButton = false;
+  var _passwordHidden = true;
+  var _textController = TextEditingController();
+
+  void clearText() => _textController.clear();
+  final _formKey = GlobalKey<FormState>();
+
+  void _moveToHome() async {
+    if (_formKey.currentState?.validate() == true) {
+      setState(() {
+        _changeButton = true;
+      });
+      await Future.delayed(Duration(seconds: 1));
+      await Navigator.pushNamed(context, AppRoute.homeRoute);
+      setState(() {
+        _changeButton = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,35 +40,84 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: [
             Image.asset(
-              "assets/images/login_pic.png",
+              "assets/images/hey.png",
               fit: BoxFit.fill,
             ),
             SizedBox(height: 10),
             Text(
-              "Welcome $_name",
+              "Welcome",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
             ),
             SizedBox(height: 10),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
-              child: Column(
-                children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: "Enter Username",
-                      labelText: "Username",
+              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.person),
+                        suffixIcon: IconButton(
+                          icon: Container(
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _name.isNotEmpty
+                                    ? Colors.grey
+                                    : Colors.transparent),
+                            child: Icon(
+                              Icons.clear,
+                              color: _name.isNotEmpty
+                                  ? Colors.white
+                                  : Colors.transparent,
+                              size: 20.0,
+                            ),
+                          ),
+                          onPressed: () => clearText(),
+                        ),
+                        hintText: "Enter Username",
+                        labelText: "Username",
+                      ),
+                      onChanged: (data) {
+                        _name = data;
+                        setState(() {});
+                      },
+                      controller: _textController,
+                      validator: (value) {
+                        if (value?.isEmpty == true) {
+                          return "Username Cannot Be Empty";
+                        } else {
+                          return null;
+                        }
+                      },
                     ),
-                    onChanged: (data) {
-                      _name = data;
-                      setState(() {});
-                    },
-                  ),
-                  TextFormField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        hintText: "Enter Password", labelText: "Password"),
-                  )
-                ],
+                    TextFormField(
+                      obscureText: _passwordHidden ? true : false,
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(_passwordHidden
+                                ? Icons.visibility_off
+                                : Icons.visibility),
+                            onPressed: () => {
+                              setState(
+                                  () => {_passwordHidden = !_passwordHidden})
+                            },
+                          ),
+                          hintText: "Enter Password",
+                          labelText: "Password"),
+                      validator: (value) {
+                        if (value?.isEmpty == true) {
+                          return "Password Cannot Be Empty";
+                        } else if (value!.length < 6) {
+                          return "Password Should Contain minimum 6 characters";
+                        } else {
+                          return null;
+                        }
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
             SizedBox(height: 10),
@@ -63,40 +130,31 @@ class _LoginScreenState extends State<LoginScreen> {
             //   style: TextButton.styleFrom(
             //       backgroundColor: Colors.blue, minimumSize: Size(150, 40)),
             // )
-            InkWell(
-                onTap: () {
-                  setState(() {
-                    _changeButton = true;
-                  });
-                },
-                child: AnimatedContainer(
-                  duration: Duration(milliseconds: 500),
-                  height: 40,
-                  onEnd: () => {
-                    Navigator.pushNamed(context, AppRoute.homeRoute)
-                  },
-                  width: _changeButton ? 50 : 150,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: Colors.deepPurple,
-                      // shape: _changeButton ? BoxShape.circle : BoxShape
-                      //     .rectangle,
-                      borderRadius:
-                          BorderRadius.circular(_changeButton ? 50 : 8)),
-                  child: _changeButton
-                      ? Icon(
-                          Icons.done,
-                          color: Colors.white,
-                        )
-                      : Text(
-                          "Login",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
+            Material(
+                color: Colors.deepPurple,
+                borderRadius: BorderRadius.circular(_changeButton ? 50 : 8),
+                child: InkWell(
+                    splashColor: Colors.red,
+                    onTap: () => _moveToHome(),
+                    child: AnimatedContainer(
+                      duration: Duration(seconds: 1),
+                      height: 40,
+                      width: _changeButton ? 50 : 150,
+                      alignment: Alignment.center,
+                      child: _changeButton
+                          ? Icon(
+                              Icons.done,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
-                ))
+                            )
+                          : Text(
+                              "Login",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16),
+                            ),
+                    )))
           ],
         ),
       ),
