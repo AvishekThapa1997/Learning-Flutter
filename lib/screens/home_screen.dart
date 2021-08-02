@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/widgets/drawer.dart';
 
 class HomeScreen extends StatelessWidget{
   @override
@@ -15,7 +16,7 @@ class HomeScreen extends StatelessWidget{
             child: Text("Flutter Day-1"),
           ),
         ),
-        drawer: Drawer(),
+        drawer: DrawerMenu(),
       );
   }
 
