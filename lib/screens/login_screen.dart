@@ -35,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: Theme.of(context).canvasColor,
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -131,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
             //       backgroundColor: Colors.blue, minimumSize: Size(150, 40)),
             // )
             Material(
-                color: Colors.deepPurple,
+                color: Theme.of(context).buttonColor,
                 borderRadius: BorderRadius.circular(_changeButton ? 50 : 8),
                 child: InkWell(
                     splashColor: Colors.red,

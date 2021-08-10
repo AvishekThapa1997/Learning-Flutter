@@ -3,22 +3,22 @@ class CatalogueModel {
 }
 
 class Product {
-  final int? id;
-  final String? title;
-  final String? description;
-  final num? price;
-  final String? category;
+  final int id;
+  final String title;
+  final String description;
+  final num price;
+  final String category;
   final String? color;
-  final String? image;
+  final String image;
 
   Product(
-      {this.id,
-      this.title,
-      this.description,
-      this.price,
-      this.color,
-      this.category,
-      this.image});
+      {required this.id,
+      required this.title,
+      required this.description,
+      required this.price,
+      required this.color,
+      required this.category,
+      required this.image});
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
